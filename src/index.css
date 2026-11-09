@@ -1,25 +1,176 @@
+@font-face {
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/manrope-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/manrope-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #292e2a;
-  background: #f6f5f1;
+  font-family:
+    Manrope,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  color-scheme: light;
+  --background: #f3f2e9;
+  --surface: #fffef8;
+  --composer: #e9ecdf;
+  --field: #fffef9;
+  --text: #283127;
+  --muted: #626b5c;
+  --line: #d7dccf;
+  --input-line: #838d78;
+  --accent: #405f3d;
+  --accent-ink: #ffffff;
+  --accent-hover: #304c2e;
+  --soft-accent: #e7eddd;
+  --track: #dce2d2;
+  --checkbox: #45693f;
+  --danger: #9b4432;
+  --danger-surface: #f7e9e2;
+  --priority-low: #4b6845;
+  --priority-medium: #796121;
+  --priority-high: #a04a35;
+  --disabled-bg: #d8decd;
+  --disabled-text: #626b58;
+  color: var(--text);
+  background: var(--background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --muted: #686d67;
-  --accent: #365c49;
-  --line: #dcded6;
 }
-
-* { box-sizing: border-box; }
-body { margin: 0; min-width: 280px; }
-button, input { font: inherit; }
-button { cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-button:disabled { cursor: default; }
-button, input { border-radius: 5px; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-button, input, label { -webkit-tap-highlight-color: transparent; }
-
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --background: #191e1a;
+  --surface: #222923;
+  --composer: #2a3329;
+  --field: #1d241e;
+  --text: #e9ebdf;
+  --muted: #afb9a5;
+  --line: #414c3d;
+  --input-line: #77866c;
+  --accent: #bdd3a3;
+  --accent-ink: #202d1c;
+  --accent-hover: #d0dfbb;
+  --soft-accent: #37462e;
+  --track: #46533b;
+  --checkbox: #557c46;
+  --danger: #f0b29c;
+  --danger-surface: #47322a;
+  --priority-low: #b6cba5;
+  --priority-medium: #e1cd91;
+  --priority-high: #efb097;
+  --disabled-bg: #424e39;
+  --disabled-text: #bec7b1;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  min-width: 280px;
+  transition:
+    color 200ms ease,
+    background-color 200ms ease;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+input,
+select {
+  border-radius: 6px;
+}
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+button:disabled {
+  cursor: default;
+}
+button:active:not(:disabled) {
+  filter: brightness(0.92);
+}
+button,
+input,
+select,
+label {
+  -webkit-tap-highlight-color: transparent;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+svg {
+  display: block;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+input,
+select {
+  min-width: 0;
+  max-width: 100%;
+  color: var(--text);
+  background: var(--field);
+  border: 1px solid var(--input-line);
+  transition:
+    background-color 200ms ease,
+    border-color 160ms ease,
+    color 200ms ease;
+}
+input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+input:focus,
+select:focus {
+  border-color: var(--accent);
+}
+input[type='date'] {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 9px;
+  font-size: 14px;
+}
+input[type='search']::-webkit-search-cancel-button {
+  appearance: none;
+}
+input[type='date']::-webkit-date-and-time-value {
+  min-height: 1.5em;
+  text-align: left;
+}
+input[type='date']::-webkit-calendar-picker-indicator {
+  padding: 4px 0 4px 4px;
+  cursor: pointer;
+}
+select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 9px;
+  font-size: 14px;
+}
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -31,9 +182,10 @@ button, input, label { -webkit-tap-highlight-color: transparent; }
   white-space: nowrap;
   border: 0;
 }
-
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;

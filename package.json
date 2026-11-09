@@ -1,7 +1,7 @@
 {
   "name": "todo-list-react",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "engines": {
     "node": ">=22.12.0"
@@ -15,6 +15,8 @@
     "test:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@dnd-kit/dom": "^0.5.3",
+    "@dnd-kit/react": "^0.5.3",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
