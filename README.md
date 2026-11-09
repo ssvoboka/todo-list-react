@@ -77,6 +77,8 @@ npm test
 
 ## Демо и материалы
 
-Публичная версия пока не опубликована: рабочая авторизация GitHub и Netlify недоступна. [Инструкция публикации](DEPLOYMENT.md) подготовлена; пароли и токены в проект не добавлялись.
+Исходный код: [GitHub — ssvoboka/todo-list-react](https://github.com/ssvoboka/todo-list-react).
+
+Публикация демо на Netlify подготавливается. Настройки и порядок обновления описаны в [DEPLOYMENT.md](DEPLOYMENT.md). Пароли и токены в проект не добавлялись.
 
 [Объяснение для собеседования](PROJECT_EXPLANATION.md) · [Тёмная тема](docs/preview-dark.png)
