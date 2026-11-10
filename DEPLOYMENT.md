@@ -2,6 +2,8 @@
 
 Исходный код: [ssvoboka/todo-list-react](https://github.com/ssvoboka/todo-list-react). Production-ветка — `main`.
 
+Опубликованный сайт: [todo-list-react-v2.netlify.app](https://todo-list-react-v2.netlify.app). Доступ открыт без входа в Netlify.
+
 ## Настройки Netlify
 
 - Framework: Vite.
@@ -11,6 +13,8 @@
 - Production branch: `main`.
 
 Настройки сборки и заголовки заданы в `netlify.toml`. Переменные окружения, сервер и платные дополнения приложению не нужны. Шрифты и уведомления о лицензиях включены в `dist/`.
+
+Проект размещён на Free. На текущем тарифе Netlify отображает свой бейдж поверх страницы; API не позволяет отключить его для этого аккаунта.
 
 ## Обновление
 
@@ -29,7 +33,7 @@ npm test
 git push origin HEAD:main
 ```
 
-После подключения Git-интеграции Netlify получает коммиты ветки `main` и собирает сайт. Публичную ссылку и подтверждённый статус автоматического обновления смотрите в README.
+Git-интеграция подключена: push в `main` отправляет GitHub webhook в Netlify, который получает исходники и собирает сайт. Для чтения создан deploy key с доступом только к этому репозиторию и только на чтение. Приватный ключ хранится на стороне Netlify.
 
 ## Проверка опубликованной версии
 
@@ -38,7 +42,7 @@ git push origin HEAD:main
 Автотесты можно направить на публичную версию (PowerShell):
 
 ```powershell
-$env:PLAYWRIGHT_BASE_URL = 'https://ВАШ-ПРОЕКТ.netlify.app'
+$env:PLAYWRIGHT_BASE_URL = 'https://todo-list-react-v2.netlify.app'
 npm test
 Remove-Item Env:PLAYWRIGHT_BASE_URL
 ```

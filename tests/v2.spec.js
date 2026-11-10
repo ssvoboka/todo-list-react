@@ -44,7 +44,7 @@ async function loadTasks(page, tasks = sample) {
     ({ key, tasks }) => localStorage.setItem(key, JSON.stringify(tasks)),
     { key: KEY, tasks },
   )
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('.task-text')).toHaveCount(tasks.length)
 }
 async function add(page, text) {
@@ -69,7 +69,8 @@ test.beforeEach(async ({ page }) => {
   })
   page.on('requestfailed', (request) => errors.push(request.url()))
   page.testErrors = errors
-  await page.goto('/')
+  // Дожидаемся ресурсов, чтобы следующий reload не отменял favicon на HTTPS.
+  await page.goto('/', { waitUntil: 'networkidle' })
   await expect(page.getByRole('heading', { name: 'Мои задачи' })).toBeVisible()
   await page.evaluate(() => document.fonts.ready)
 })
@@ -86,7 +87,7 @@ test('тема следует системе до первого выбора, �
       window.initialTheme = document.documentElement.dataset.theme
     })
   })
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   expect(await page.evaluate(() => window.initialTheme)).toBe('dark')
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   expect(
@@ -97,10 +98,10 @@ test('тема следует системе до первого выбора, �
   expect(
     await page.evaluate((key) => localStorage.getItem(key), THEME_KEY),
   ).toBe('light')
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   expect(await page.evaluate(() => window.initialTheme)).toBe('light')
   await page.getByRole('button', { name: 'Включить тёмную тему' }).click()
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
 })
 
@@ -129,7 +130,7 @@ test('неверная тема и запрет её сохранения не �
   page,
 }) => {
   await page.evaluate((key) => localStorage.setItem(key, 'invalid'), THEME_KEY)
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
   await page.addInitScript(() => {
     const original = Storage.prototype.setItem
@@ -139,7 +140,7 @@ test('неверная тема и запрет её сохранения не �
       return original.call(this, key, value)
     }
   })
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await page.getByRole('button', { name: 'Включить тёмную тему' }).click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await expect(
@@ -172,7 +173,7 @@ test('миграция V1 сохраняет id, статусы, порядок 
       JSON.parse(localStorage.getItem('todo-list.tasks.v1.backup')),
     ),
   ).toEqual(legacy)
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   expect((await saved(page)).map((task) => task.id)).toEqual([
     'old-2',
     'old-1',
@@ -226,7 +227,7 @@ test('создание с тремя приоритетами, сроком и �
     ['medium', null],
     ['low', null],
   ])
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('.priority')).toHaveText([
     'Высокий',
     'Средний',
@@ -263,7 +264,7 @@ test('Enter сохраняет обрезанное название и свой
       name: 'Редактировать задачу: Новый текст выполненной задачи',
     }),
   ).toBeFocused()
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   expect(await saved(page)).toEqual(result)
 })
 
@@ -305,7 +306,7 @@ test('изменение и удаление дедлайна сохраняют
   await expect(page.locator('.task-editor').getByLabel('Срок')).toHaveValue('')
   await page.getByRole('button', { name: 'Сохранить', exact: true }).click()
   expect((await saved(page))[0].dueDate).toBeNull()
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('[data-task-id="a"] time')).toHaveCount(0)
 })
 
@@ -387,7 +388,7 @@ test('поиск русских и английских названий, фил
     .click()
   await expect(page.locator('.task-text')).toHaveCount(0)
   expect((await saved(page)).map((task) => task.id)).toEqual(['a', 'c'])
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.getByRole('searchbox')).toHaveValue('')
   await expect(
     page.getByRole('button', { name: 'Все', exact: true }),
@@ -436,7 +437,7 @@ test('Alt + стрелки меняют порядок с клавиатуры �
   ])
   await expect(handle).toBeFocused()
   expect(await saved(page)).toEqual([sample[1], sample[0], sample[2]])
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('.task-text')).toHaveText([
     sample[1].text,
     sample[0].text,
@@ -472,7 +473,7 @@ test('перетаскивание мышью меняет порядок без
     sample[0].text,
   ])
   expect(await saved(page)).toEqual([sample[1], sample[2], sample[0]])
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('.task-text')).toHaveText([
     sample[1].text,
     sample[2].text,

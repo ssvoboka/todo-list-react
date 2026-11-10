@@ -15,7 +15,8 @@ test.beforeEach(async ({ page }) => {
   page.on('console', (message) => {
     if (message.type() === 'error') page.testErrors.push(message.text())
   })
-  await page.goto('/')
+  // Дожидаемся ресурсов, чтобы следующий reload не отменял favicon на HTTPS.
+  await page.goto('/', { waitUntil: 'networkidle' })
   await expect(page.getByRole('heading', { name: 'Мои задачи' })).toBeVisible()
   await page.evaluate(() => document.fonts.ready)
 })
@@ -35,7 +36,7 @@ test('настоящие touch-события: перетаскивание за
     ({ key, tasks }) => localStorage.setItem(key, JSON.stringify(tasks)),
     { key: KEY, tasks },
   )
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await page.locator('.task-item').last().scrollIntoViewIfNeeded()
   const from = await page.locator('.drag-handle').first().boundingBox()
   const to = await page.locator('.task-item').last().boundingBox()
@@ -67,7 +68,7 @@ test('настоящие touch-события: перетаскивание за
   expect(
     await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), KEY),
   ).toEqual([tasks[1], tasks[2], tasks[0]])
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('.task-text')).toHaveText([
     tasks[1].text,
     tasks[2].text,
@@ -93,7 +94,7 @@ test('обычная сенсорная прокрутка текста не з�
     ({ key, tasks }) => localStorage.setItem(key, JSON.stringify(tasks)),
     { key: KEY, tasks: many },
   )
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await page.locator('.task-item').nth(2).scrollIntoViewIfNeeded()
   const title = await page.locator('.task-text').nth(2).boundingBox()
   const client = await context.newCDPSession(page)
@@ -133,7 +134,7 @@ test('сортировка по Space и стрелкам, затем подтв
     ({ key, tasks }) => localStorage.setItem(key, JSON.stringify(tasks)),
     { key: KEY, tasks },
   )
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   const handle = page.getByRole('button', {
     name: `Изменить порядок задачи: ${tasks[0].text}`,
   })
@@ -172,7 +173,7 @@ for (const [timezone, overdue] of [
       ({ key, task }) => localStorage.setItem(key, JSON.stringify([task])),
       { key: KEY, task: { ...tasks[0], dueDate: '2026-11-10' } },
     )
-    await page.goto('/')
+    await page.goto('/', { waitUntil: 'networkidle' })
     await expect(page.locator('time')).toHaveAttribute('datetime', '2026-11-10')
     await expect(page.locator('.is-overdue')).toHaveCount(overdue ? 1 : 0)
     if (!overdue) await expect(page.locator('time')).toHaveText('Сегодня')
@@ -187,7 +188,7 @@ test('удаление записывается до конца анимации
     ({ key, tasks }) => localStorage.setItem(key, JSON.stringify(tasks)),
     { key: KEY, tasks },
   )
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await page
     .getByRole('button', { name: `Удалить задачу: ${tasks[0].text}` })
     .click()
@@ -196,7 +197,7 @@ test('удаление записывается до конца анимации
       await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), KEY)
     ).map((task) => task.id),
   ).toEqual(['drag-1', 'drag-2'])
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.locator('.task-text')).toHaveText([
     tasks[1].text,
     tasks[2].text,

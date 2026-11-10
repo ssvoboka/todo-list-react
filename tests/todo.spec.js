@@ -29,7 +29,8 @@ test.beforeEach(async ({ page }) => {
       errors.push(`${response.status()} ${response.url()}`)
   })
   page.on('requestfailed', (request) => errors.push(request.url()))
-  await page.goto('/')
+  // Дожидаемся ресурсов, чтобы следующий reload не отменял favicon на HTTPS.
+  await page.goto('/', { waitUntil: 'networkidle' })
   await expect(page.getByRole('heading', { name: 'Мои задачи' })).toBeVisible()
   await page.evaluate(() => document.fonts.ready)
   page.testErrors = errors
@@ -157,7 +158,7 @@ test('список, идентификаторы и статусы сохран�
   )
   expect(saved).toHaveLength(2)
   expect(new Set(saved.map((task) => task.id)).size).toBe(2)
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(
     page.getByRole('checkbox', { name: 'Сохранить работу' }),
   ).toBeChecked()
@@ -166,7 +167,7 @@ test('список, идентификаторы и статусы сохран�
   // Открываем новую вкладку в том же браузерном контексте после закрытия исходной.
   const reopened = await context.newPage()
   await page.close()
-  await reopened.goto(url)
+  await reopened.goto(url, { waitUntil: 'networkidle' })
   await expect(reopened.getByRole('listitem')).toHaveCount(2)
   await expect(
     reopened.getByRole('checkbox', { name: 'Сохранить работу' }),
@@ -214,7 +215,7 @@ for (const [description, value] of damagedValues) {
       key: STORAGE_KEY,
       value,
     })
-    await page.reload()
+    await page.reload({ waitUntil: 'networkidle' })
     await expect(
       page.getByText('Сохранённый список повреждён. Можно начать новый.'),
     ).toBeVisible()
@@ -226,7 +227,7 @@ for (const [description, value] of damagedValues) {
       page.getByRole('checkbox', { name: 'Начать новый список' }),
     ).toBeVisible()
     await expect(page.locator('.storage-warning')).toHaveCount(0)
-    await page.reload()
+    await page.reload({ waitUntil: 'networkidle' })
     await expect(page.getByRole('listitem')).toHaveCount(1)
   })
 }
@@ -243,7 +244,7 @@ test('запрет чтения и записи localStorage не мешает �
       })
     }
   })
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(
     page.getByText(
       'Хранилище недоступно. Задачи будут доступны только на этой странице.',
@@ -273,7 +274,7 @@ test('переполнение localStorage показывает предупр�
       },
     })
   })
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await addTask(page, 'Сохранить позже')
   await expect(page.locator('.storage-warning')).toBeVisible()
   await expect(page.getByRole('listitem')).toHaveCount(1)
@@ -393,7 +394,7 @@ test('100 задач, прокрутка и действия с последне
       completed: i % 3 === 0,
     })),
   )
-  await page.reload()
+  await page.reload({ waitUntil: 'networkidle' })
   await expect(page.getByRole('listitem')).toHaveCount(100)
   await expect(page.locator('.task-summary')).toHaveText('Выполнено 34 из 100')
   await page
@@ -481,7 +482,7 @@ for (const [width, height] of sizes) {
         completed: i % 3 === 0,
       })),
     )
-    await page.reload()
+    await page.reload({ waitUntil: 'networkidle' })
     await expect(page.getByRole('listitem')).toHaveCount(10)
     expect(
       await page.evaluate(

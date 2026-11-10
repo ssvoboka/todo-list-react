@@ -2,6 +2,8 @@
 
 Адаптивный список повседневных дел на React. Задачи остаются в вашем браузере; регистрация, сервер и внешние API не нужны.
 
+[Открыть демо](https://todo-list-react-v2.netlify.app) · [Исходный код](https://github.com/ssvoboka/todo-list-react)
+
 ![Светлая тема с тестовыми задачами](docs/preview.png)
 
 ## Возможности
@@ -71,6 +73,8 @@ npm test
 
 На Windows тесты Chromium используют установленный Microsoft Edge. Если его нет: `npx playwright install msedge`. На macOS/Linux дополнительно нужен `npx playwright install chromium`. [TESTING.md](TESTING.md) содержит фактические результаты, размеры экранов и ограничения проверки.
 
+Опубликованная версия на Netlify проверена тем же набором: **264 passed, 46 skipped, 0 failed**, пять браузерных профилей, без повторных попыток. Проверки линтера и production-сборки также пройдены.
+
 ## Использование AI
 
 Проект доработан с OpenAI Codex. AI применялся для анализа существующего кода и референсов, реализации интерфейса и новых функций, подготовки браузерных тестов, изучения скриншотов и документации. Автотесты действительно запускались; детали приведены в TESTING.md. Внутри приложения AI-сервисы не используются.
@@ -79,6 +83,6 @@ npm test
 
 Исходный код: [GitHub — ssvoboka/todo-list-react](https://github.com/ssvoboka/todo-list-react).
 
-Публикация демо на Netlify подготавливается. Настройки и порядок обновления описаны в [DEPLOYMENT.md](DEPLOYMENT.md). Пароли и токены в проект не добавлялись.
+Демо: [todo-list-react-v2.netlify.app](https://todo-list-react-v2.netlify.app). Сайт открыт без авторизации. Netlify связан с GitHub и автоматически собирает ветку `main` после push. Настройки и порядок обновления описаны в [DEPLOYMENT.md](DEPLOYMENT.md). Пароли и токены в проект не добавлялись.
 
 [Объяснение для собеседования](PROJECT_EXPLANATION.md) · [Тёмная тема](docs/preview-dark.png)
